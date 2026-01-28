@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -50,17 +51,23 @@ const benefits = [
     "急な増員にも柔軟に対応",
 ];
 
-const galleryImages = [
-    { src: "/images/services1.jpg", alt: "農業現場での作業風景" },
-    { src: "/images/services2.png", alt: "選果作業" },
-    { src: "/images/services3.jpg", alt: "収穫作業" },
-    { src: "/images/services5.png", alt: "出荷準備" },
-    { src: "/images/services7.jpg", alt: "チームでの作業" },
-    { src: "/images/cases/organic-tea-cultivation.png", alt: "有機茶栽培" },
-    { src: "/images/cases/tea-farm-workers.png", alt: "茶畑での作業" },
-];
-
 export default function ContractingPage() {
+    // フェードイン・アウトする画像
+    const fadeImages = [
+        { src: "/images/services111.jpg", alt: "農業作業風景1" },
+        { src: "/images/services333.jpg", alt: "農業作業風景2" },
+    ];
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    // 5秒ごとに画像を切り替え
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % fadeImages.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <div className="pt-20">
             {/* Hero */}
@@ -151,6 +158,23 @@ export default function ContractingPage() {
                             人材の採用も管理も、すべて私たちの責任。<br />
                             あなたは、あなたにしかできないことに集中してほしい。
                         </p>
+
+                        {/* フェードイン・アウト画像 */}
+                        <div className="mt-8 w-full overflow-hidden rounded-2xl relative h-[300px] md:h-[400px]">
+                            {fadeImages.map((image, index) => (
+                                <motion.img
+                                    key={image.src}
+                                    src={image.src}
+                                    alt={image.alt}
+                                    className="w-full h-full object-cover absolute top-0 left-0"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ 
+                                        opacity: currentImageIndex === index ? 1 : 0 
+                                    }}
+                                    transition={{ duration: 1.5 }}
+                                />
+                            ))}
+                        </div>
                     </motion.div>
                 </div>
             </section>
@@ -296,76 +320,6 @@ export default function ContractingPage() {
                             </div>
                         </div>
                     </motion.div>
-                </div>
-            </section>
-
-            {/* Gallery - 横スクロールスライドショー */}
-            <section className="section bg-gradient-to-br from-[#0D9488]/5 via-white to-[#0D9488]/5 overflow-hidden py-20">
-                <div className="container mx-auto">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center mb-12"
-                    >
-                        <span className="text-[#D4A853] font-medium text-sm tracking-wider uppercase mb-4 block">
-                            Gallery
-                        </span>
-                        <h2
-                            className="text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-4"
-                            style={{ fontFamily: "var(--font-shippori-mincho), serif" }}
-                        >
-                            作業の現場から
-                        </h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto">
-                            実際の作業現場の様子をご覧ください
-                        </p>
-                    </motion.div>
-
-                    {/* 無限スクロールギャラリー */}
-                    <div className="relative">
-                        <div className="overflow-hidden">
-                            <motion.div
-                                className="flex gap-6"
-                                animate={{
-                                    x: [0, -100 * galleryImages.length / 2],
-                                }}
-                                transition={{
-                                    x: {
-                                        repeat: Infinity,
-                                        repeatType: "loop",
-                                        duration: 18,
-                                        ease: "linear",
-                                    },
-                                }}
-                            >
-                                {[...galleryImages, ...galleryImages, ...galleryImages].map((image, index) => (
-                                    <motion.div
-                                        key={index}
-                                        className="flex-shrink-0 w-[400px] md:w-[500px]"
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        whileInView={{ opacity: 1, scale: 1 }}
-                                        viewport={{ once: true, margin: "-100px" }}
-                                        transition={{ duration: 0.5 }}
-                                    >
-                                        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl group">
-                                            <Image
-                                                src={image.src}
-                                                alt={image.alt}
-                                                fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-700"
-                                            />
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </motion.div>
-                        </div>
-
-                        {/* 薄めのグラデーションフェード（左右） */}
-                        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white/80 to-transparent pointer-events-none" />
-                        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white/80 to-transparent pointer-events-none" />
-                    </div>
                 </div>
             </section>
 
